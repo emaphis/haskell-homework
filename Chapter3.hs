@@ -2,6 +2,7 @@
 -- | Basic data types
 
 module Chapter3 where
+import Prelude hiding (max, min)
 import Test.QuickCheck
 
 -- Booleans - the Bool type
@@ -107,11 +108,11 @@ mystery m n p = not ((m==n) && (n==p))
 threeDifferent :: Integer -> Integer -> Integer -> Bool
 threeDifferent m n p = (m /= n) && (n /= p) && (m /= p)
 
--- threeDifferent -> False because  m == p
+-- threeDifferent 3 4 3 -> False because  m == p
 
 -- another definition
 threeDifferent1 ::  Integer -> Integer -> Integer -> Bool
-threeDifferent1 m n p = not ((m==n) || (m==p) || (n==p))
+threeDifferent1 m n p = not ((m==n) || (n==p) || (n==p))
 
 prop_3d ::  Integer -> Integer -> Integer -> Bool
 prop_3d m n p = threeDifferent m n p == threeDifferent1 m n p
@@ -129,3 +130,169 @@ prop_4e :: Integer -> Integer -> Integer -> Integer -> Bool
 prop_4e m n o p = fourEqual m n o p  == fourEqual1 m n o p
 
 -- Ex 3.12  QuickCheck definitions - see abouve
+
+
+-- 3.4 Guards
+
+max :: Integer -> Integer -> Integer
+max x y
+  | x >= y     = x
+  | otherwise  = y
+
+maxThree :: Integer -> Integer -> Integer -> Integer
+maxThree x y z
+  | x >= y && x >= z   = x
+  | y >= z             = y
+  | otherwise          = z
+
+prop_maxThree1, prop_maxThree2 :: Integer -> Integer -> Integer -> Bool
+prop_maxThree1 x y z =
+  x <= maxThree x y z || y <= maxThree x y z || z <= maxThree x y z
+prop_maxThree2 x y z =
+  x <= maxThree x y z && y <= maxThree x y z && z <= maxThree x y z
+
+
+-- Conditional expression
+-- if condition the a else b
+
+-- max using a condtional
+max' :: Integer -> Integer -> Integer
+max' x y =
+  if x >= y then x else y
+
+prop_compareMax :: Integer -> Integer -> Bool
+prop_compareMax x y =
+  max x y == max' x y
+
+-- properties of max
+-- The maximum of x and y will be greater than or equal to both x and y.
+-- The maximum of x and y will actually be equal to one (or both) of x and y.
+prop_maxl, prop_max2 :: Integer -> Integer -> Bool
+prop_maxl x y =
+  x <= max x y && y <= max x y
+prop_max2 x y =
+  x == max x y || y == max x y
+
+  -- Ex 3.14 - Give a definition of min and minThree
+min :: Int -> Int -> Int
+min x y
+  | x <= y    = x
+  | otherwise = y
+
+prop_min1, prop_min2 :: Int -> Int -> Bool
+prop_min1 x y =
+  x >= min x y && x >= min x y
+prop_min2 x y =
+  x == min x y || y == min x y
+
+minThree :: Int -> Int -> Int -> Int
+minThree x y z
+  | x <= y && x <= z   = x
+  | y <= z             = y
+  | otherwise          = z
+
+prop_minThree1, prop_minThree2 :: Int -> Int -> Int -> Bool
+prop_minThree1 x y z =
+  x >= minThree x y z || y >= minThree x y z || z >= minThree x y z
+
+prop_minThree2 x y z =
+  x >= minThree x y z && y >= minThree x y z && z >= minThree x y z
+
+
+
+-- 3.5 Characters and Strings
+{-
+  tab              '\t'
+  newline          '\n'
+  backslash (\)    '\\'
+  single quote (') '\''
+  double quote (") '\"'
+
+  fromEnum :: Char -> Int
+  toEnum :: Int -> Char
+-}
+
+offset :: Int
+offset = fromEnum 'A' - fromEnum 'a'
+
+toUpper :: Char -> Char
+toUpper ch = toEnum (fromEnum ch + offset)
+
+isDigit :: Char -> Bool
+isDigit ch = ('0' <= ch) && (ch <= '9')
+
+
+-- Ex 3.16  toUpper that ignores non small char's
+
+toUpper1 :: Char -> Char
+toUpper1 ch =
+  if isSmall ch then toUpper ch else ch
+
+isSmall :: Char -> Bool
+isSmall ch = ('a' <= ch) && ('z' <= ch)
+
+-- Ex 3.17 define a function that converts a Char to an Int
+-- non-numbers should be 0
+
+charToNum :: Char -> Int
+charToNum ch =
+  if isDigit ch then (fromEnum ch - nOffset) else 0
+
+nOffset :: Int
+nOffset = fromEnum '0'
+
+-- String
+str1, str2, str3, str4 :: String
+
+str1 = "baboon"
+str2 = "\99a\116"
+str3 = "gorilla\nhippo\nibex"
+str4 = "I\t23\t456"
+
+ptstr1, ptstr2, ptstr3, ptstr4 :: IO ()
+ptstr1 = putStr str1
+ptstr2 = putStr str2
+ptstr3 = putStr str3
+ptstr4 = putStr str4
+{-
+  putStr :: String -> 10 ()
+  show - convert value to a String
+  read - convert from a String to value
+-}
+
+-- Ex 3.18 print out three lines
+onThreeLines :: String -> String -> String -> String
+onThreeLines s1 s2 s3 =
+  s1 ++ "\n" ++ s2 ++ "\n" ++ s3 ++ "\n"
+
+-- Ex 3.19 Romean digints
+romanDigit :: Char -> String
+romanDigit num
+  | num == '0'  = ""
+  | num == '1'  = "I"
+  | num == '2'  = "II"
+  | num == '3'  = "III"
+  | num == '4'  = "IV"
+  | num == '5'  = "V"
+  | num == '6'  = "VI"
+  | num == '7'  = "VII"
+  | num == '8'  = "VIII"
+  | num == '9'  = "IX"
+  | otherwise   = ""
+
+
+-- 3.6 Floating-point numbers: Float
+
+flt1, flt2, flt3, flt4 :: Float
+flt1 = 0.31426
+flt2 = -23.12
+flt3 = 567.347
+flt4 = 4523.0
+
+-- fromInteger :: Integer->Float
+-- FromIntegral :: Int -> Float
+-- ceiling, floor round :: Float -> Integer
+
+-- Ex 3.20 - average of three fucntion
+averageThree :: Integer -> Integer -> Integer -> Float
+averageThree n m o = fromInteger(n + m + o) / 3.0
