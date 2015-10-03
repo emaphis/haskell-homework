@@ -38,6 +38,8 @@ library
                 PicturesSVG
                 FirstScript
                 Chapter2
+                Usepictures
+                Chapter3
 
 source-repository head
   type:     git
