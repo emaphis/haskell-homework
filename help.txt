@@ -10,3 +10,156 @@
 :!              Perform an operating system command
 :edit           Edit the given file in
 :add     :a     Add module
+
+
+Haskell
+ C-c C-l     haskell-process-load-or-reload
+ C-c C-t     haskell-process-do-type
+ C-c C-i     haskell-process-do-info
+ M-.         haskell-mode-jump-to-def-or-tag
+ C-c C-k     haskell-interactive-mode-clear
+ C-c C-c     haskell-process-cabal-build
+ C-c C-x     haskell-process-cabal
+ C-c C-b     haskell-interactive-switch)
+ C-c C-z     haskell-interactive-switch)
+ M-n         haskell-goto-next-error
+ M-p         haskell-goto-prev-error
+
+Haskell Mode
+ C-c C-.     haskell-mode-format-imports
+ C-c C-l     haskell-mode-enable-process-minor-mode
+ C-c C-b     haskell-mode-enable-process-minor-mode
+ C-c C-v     haskell-mode-enable-process-minor-mode
+ C-c C-t     haskell-mode-enable-process-minor-mode
+ C-c C-i     haskell-mode-enable-process-minor-mode
+
+Haskell Interactive
+ RET         haskell-interactive-mode-return
+ SPC         haskell-interactive-mode-space
+ C-j         haskell-interactive-mode-newline-indent
+ C-a         haskell-interactive-mode-beginning
+ <home>      haskell-interactive-mode-beginning
+ C-c C-k     haskell-interactive-mode-clear
+ C-c C-c     haskell-process-interrupt
+ C-c C-f     next-error-follow-minor-mode
+ C-c C-z     haskell-interactive-switch-back
+ M-p         haskell-interactive-mode-history-previous
+ M-n         haskell-interactive-mode-history-next
+ C-c C-p     haskell-interactive-mode-prompt-previous
+ C-c C-n     haskell-interactive-mode-prompt-next
+ C-<up>      haskell-interactive-mode-history-previous
+ C-<down>    haskell-interactive-mode-history-next
+ TAB         haskell-interactive-mode-tab
+ <C-S-backspace> haskell-interactive-mode-kill-whole-line
+
+Haskell Debug
+ g           haskell-debug/refresh
+ s           haskell-debug/step
+ t           haskell-debug/trace
+ d           haskell-debug/delete
+ b           haskell-debug/break-on-function
+ a           haskell-debug/abandon
+ c           haskell-debug/continue
+ p           haskell-debug/previous
+ n           haskell-debug/next
+ RET         haskell-debug/select
+
+Highlight uses mode
+ TAB         highlight-uses-mode-next 
+ S-TAB       highlight-uses-mode-prev 
+ <backtab>   highlight-uses-mode-prev 
+ RET         highlight-uses-mode-stop-here 
+ C-g         highlight-uses-mode 
+
+Cabal mode
+ C-c C-s     haskell-cabal-subsection-arrange-lines
+ C-M-n       haskell-cabal-next-section
+ C-M-p       haskell-cabal-previous-section
+ M-n         haskell-cabal-next-subsection
+ M-p         haskell-cabal-previous-subsection
+ C-<down>    haskell-cabal-next-subsection
+ C-<up>      haskell-cabal-previous-subsection
+ C-c C-f     haskell-cabal-find-or-create-source-file
+ M-g l       haskell-cabal-goto-library-section
+ M-g e       haskell-cabal-goto-executable-section
+ M-g b       haskell-cabal-goto-benchmark-section
+ M-g t       haskell-cabal-goto-test-suite-section
+
+
+Ghc-mod
+M-C-i        ghc-completion-key  'ghc-complete)
+Completes a name of keyword, module, class, function, types, language extensions, GHC flags, etc.
+
+M-/
+Completes a name of local symbol.
+
+C-u M-t      ghc-insert-key      'ghc-insert-template-or-signature) 
+Inserts template. In the beginning of a buffer, "module Foo where" is inserted. On the function without signature, inferred type is inserted. On a symbol "foo" without definition, "foo = undefined" is inserted or a proper module is imported.
+
+C-u M-t
+Inserts a hole in this case. On a variable, the case is split. When checking with hlint, original code is replaced with hlint's suggestion if possible.
+
+M-C-d
+Browses the local document with your browser. On a module import line, the document of the module is browsed. On a function or type, its document is browsed.
+
+C-u M-C-d    ghc-document-key    'ghc-browse-document)
+Browses the Hackage document of the module with your browser.
+
+M-C-m    ghc-import-key      'ghc-import-module)
+Loads information of symbols for modules in the current buffer. If you add a new line to import a module, type this. The idle timer executes this command anyway.
+
+C-c C-h  ghc-hoogle-key      'haskell-hoogle)
+Query somthing at the cursor for hoogle.
+
+C-x C-s
+Saves the buffer if necessary and runs syntax check.
+
+C-c C-c  ghc-toggle-key      'ghc-toggle-check-command)
+Toggle GHC and Hlint for syntax check. GHC is used for initial time.
+
+M-n      ghc-next-key        'ghc-goto-next-error)
+Goes to the next warning or error.
+
+M-p      ghc-previous-key    'ghc-goto-prev-error)
+Goes to the previous warning or error.
+
+M-?      ghc-help-key        'ghc-display-errors)
+Displays the warning/error message in the current line.
+
+C-c C-i  ghc-info-key        'ghc-show-info)
+Displays the info of this expression in another window.
+
+C-c C-t  ghc-type-key        'ghc-show-type)
+Displays the type of this expression in the minibuffer. Type C-c C-t multiple time to enlarge the expression.
+
+C-c C-a  ghc-auto-key        'ghc-auto)
+Selects one of possible cases.
+
+C-c C-f  ghc-refine-key      'ghc-refine)
+Replaces a hole with user-typed functions followed by holes.
+
+C-c C-e  ghc-expand-key      'ghc-expand-th
+Displays the expanded Template Haskell.
+
+C-c C-m  ghc-module-key      'ghc-insert-module)
+Insert "import Module" for the function at the cursor.
+
+M-s      ghc-sort-key        'ghc-sort-lines)
+Sort and merge import statements in the region.
+
+C-c C-j  ghc-jump-key        'ghc-jump-file)
+In the beginning of the buffer, errors of other files are displayed.
+             Typing C-c C-j on the errors jumps to the fist file of the error sources.
+
+C-c C-k  ghc-kill-key        'ghc-kill-process)
+Kill the ghc-modi subprocess for this project. If you install dependency packages, this command should be executed to reflect that change.
+
+C-c <    ghc-shallower-key   'ghc-make-indent-shallower)
+Make the indentation of the region shallower.
+
+C-c >    ghc-deeper-key      'ghc-make-indent-deeper)
+Make the indentation of the region deeper.
+
+ C-c C-s  ghc-case-split-key  'ghc-case-split)
+ C-c M-p   ghc-prev-hole-key   'ghc-goto-prev-hole)
+ C-c M-n  ghc-next-hole-key   'ghc-goto-next-hole)
