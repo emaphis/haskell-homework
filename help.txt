@@ -1,0 +1,12 @@
+
+:               Repeate last command
+:load    :l     Load a haskell file
+:relode  :r     Reload a haskell file
+:type    :t     Give type of expression
+:info    :i     Give info on name
+:browse  :b     Give info on definitions if Module
+:quit    :q     Quit the system
+:help    :h     Give complete list of GHCI commands
+:!              Perform an operating system command
+:edit           Edit the given file in
+:add     :a     Add module
