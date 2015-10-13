@@ -1,3 +1,22 @@
+Some stuff to try:
+TAB        Haskell-indent-cycle:
+           Cycle through possible indentings for this line.
+
+C-c C-=    Haskell-indent-insert-equal:
+           Insert an equal-sign lined up with others above it. 
+
+C-c C-|    Haskell-indent-insert-guard:
+           Insert a guard lined up with others.
+
+C-c C-o    Haskell-indent-insert-otherwise:
+           Insert an ``otherwise'' line in a guarded command.
+
+C-c C-w    Haskell-indent-insert-where:
+           Insert a where with the proper indentation.
+
+C-c C-.    Haskell-indent-align-guards-and-rhs:
+           Properly indent the entire selected region. (Nothing happens
+           if you don't first select a region.)
 
 :               Repeate last command
 :load    :l     Load a haskell file
