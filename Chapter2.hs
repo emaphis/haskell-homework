@@ -21,3 +21,13 @@ module Chapter2 where
 
 cube :: Integer -> Integer
 cube n = n*n*n
+
+fac1 :: Integer -> Integer
+fac1 0 = 1
+fac1 n = n * fac1 (n-1)
+
+
+fibo :: Integer -> Integer
+fibo 0 = 0
+fibo 1 = 1
+fibo n = fibo (n-1) + fibo (n-2)

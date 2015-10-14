@@ -38,3 +38,6 @@ task4b n = double (square n)
 
 a :: Integer
 a = 23
+
+fac 0 = 1
+fac n = n * fac (n-1)
