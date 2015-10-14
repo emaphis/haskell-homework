@@ -715,9 +715,19 @@ testAllEqual6 = TestCase (assertEqual "allEqual -5 5 0" False (allEqual (-5) 5 0
 testsAllEqual = TestList [testAllEqual1 , testAllEqual2, testAllEqual3, testAllEqual4,
                           testAllEqual5, testAllEqual6]
 
+-- quickCheck -- compare against "trusted" threeEqual
+prop_allEqual m n p =
+  allEqual m n p == threeEqual m n p
+
+-- allEqual should be different for allDifferent:
+prop_allEqual_not_threeDifferent m n p =
+  not (allEqual m n p && threeDifferent m n p)
+
 -- Ex 4.34
 solution :: Integer -> Integer -> Integer -> Bool
 solution m n p = ((m+n+p)==3*p)
+
+-- pretend allEqual
 
 testSolution1 = TestCase (assertEqual "solution1 5 5 5" True  (solution 5 5 5))
 testSolution2 = TestCase (assertEqual "solution1 5 5 3" False (solution 5 5 3))
@@ -732,6 +742,14 @@ testsAllSolution = TestList [testSolution1 , testSolution2, testSolution3, testS
                           testSolution5, testSolution6]
 -- all tests passed, except when any are negative
 
+-- quicCheck against "trusted"  threeEqual  -- this should fail
+prop_solution :: Integer -> Integer -> Integer -> Bool
+prop_solution  m n o =
+  solution m n o  ==  threeEqual m n o
+
+-- failed:  -4 6 1, 5 -1 2, 2 -6 -2, -12 2 -5, 3 7 5,
+-- but many runs of quickCheck passed, oops
+
 
 -- Ex 4.35 test all different
 allDifferent :: Integer -> Integer -> Integer -> Bool
@@ -744,8 +762,14 @@ testAllDifferent4 = TestCase (assertEqual "allDifferent 3 5 5" False (allDiffere
 testAllDifferent5 = TestCase (assertEqual "allDifferent 2 3 5" True  (allDifferent 2 3 5))
 testAllDifferent6 = TestCase (assertEqual "allDifferent -5 5 0" True  (allDifferent (-5) 5 0))
 
-testsAllDifferent = TestList [testAllDifferent1 , testAllDifferent2, testAllDifferent3, testAllDifferent4,
-                          testAllDifferent5, testAllDifferent6]
+testsAllDifferent = TestList [testAllDifferent1 , testAllDifferent2, testAllDifferent3,
+                          testAllDifferent4,  testAllDifferent5, testAllDifferent6]
+
+-- quickCheck - test against "trusted" threeDifferent
+prop_allDifferent :: Integer -> Integer -> Integer -> Bool
+prop_allDifferent m n o =
+  allDifferent m n o  ==  threeDifferent m n o
+
 
 -- Ex 4.36  test attempt
 
@@ -785,3 +809,8 @@ testPowerOfTwo5 = TestCase (assertEqual "powerOfTwo' 4" 16  (powerOfTwo' 4))
 
 testsPowerOfTwo = TestList [testPowerOfTwo1, testPowerOfTwo2, testPowerOfTwo3, testPowerOfTwo4, testPowerOfTwo5]
 
+-- don't run.
+--prop_powerOfTwo n =
+--   powerOfTwo n  ==  2^n
+
+-- Ex 4.49 Write QuickCheck test for the exercises:  See above.
