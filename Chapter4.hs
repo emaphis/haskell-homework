@@ -697,3 +697,91 @@ fact n
 prop_fact n =
   fact n > 0
 
+
+-- Exercises
+
+-- 4.32 test allEqual
+
+allEqual :: Integer -> Integer -> Integer -> Bool
+allEqual m n p = (m==n) && (n==p)
+
+testAllEqual1 = TestCase (assertEqual "allEqual 5 5 5" True (allEqual 5 5 5))
+testAllEqual2 = TestCase (assertEqual "allEqual 5 5 3" False (allEqual 5 5 3))
+testAllEqual3 = TestCase (assertEqual "allEqual 3 5 3" False (allEqual 3 5 3))
+testAllEqual4 = TestCase (assertEqual "allEqual 3 5 5" False (allEqual 3 5 5))
+testAllEqual5 = TestCase (assertEqual "allEqual 2 3 5" False (allEqual 2 3 5))
+testAllEqual6 = TestCase (assertEqual "allEqual -5 5 0" False (allEqual (-5) 5 0))
+
+testsAllEqual = TestList [testAllEqual1 , testAllEqual2, testAllEqual3, testAllEqual4,
+                          testAllEqual5, testAllEqual6]
+
+-- Ex 4.34
+solution :: Integer -> Integer -> Integer -> Bool
+solution m n p = ((m+n+p)==3*p)
+
+testSolution1 = TestCase (assertEqual "solution1 5 5 5" True  (solution 5 5 5))
+testSolution2 = TestCase (assertEqual "solution1 5 5 3" False (solution 5 5 3))
+testSolution3 = TestCase (assertEqual "solution1 3 5 3" False (solution 3 5 3))
+testSolution4 = TestCase (assertEqual "solution1 3 5 5" False (solution 3 5 5))
+testSolution5 = TestCase (assertEqual "solution1 2 3 5" False (solution 2 3 5))
+
+-- this should fail:
+testSolution6 = TestCase (assertEqual "solution1 -5 5 0" False (solution (-5) 5 0))
+
+testsAllSolution = TestList [testSolution1 , testSolution2, testSolution3, testSolution4,
+                          testSolution5, testSolution6]
+-- all tests passed, except when any are negative
+
+
+-- Ex 4.35 test all different
+allDifferent :: Integer -> Integer -> Integer -> Bool
+allDifferent m n p = (m /= n) && (n /= p) && (m /= p)
+
+testAllDifferent1 = TestCase (assertEqual "allDifferent 5 5 5" False (allDifferent 5 5 5))
+testAllDifferent2 = TestCase (assertEqual "allDifferent 5 5 3" False (allDifferent 5 5 3))
+testAllDifferent3 = TestCase (assertEqual "allDifferent 3 5 3" False (allDifferent 3 5 3))
+testAllDifferent4 = TestCase (assertEqual "allDifferent 3 5 5" False (allDifferent 3 5 5))
+testAllDifferent5 = TestCase (assertEqual "allDifferent 2 3 5" True  (allDifferent 2 3 5))
+testAllDifferent6 = TestCase (assertEqual "allDifferent -5 5 0" True  (allDifferent (-5) 5 0))
+
+testsAllDifferent = TestList [testAllDifferent1 , testAllDifferent2, testAllDifferent3, testAllDifferent4,
+                          testAllDifferent5, testAllDifferent6]
+
+-- Ex 4.36  test attempt
+
+attempt :: Integer -> Integer -> Integer -> Bool
+attempt m n p = (m/=n) && (n/=p)
+
+testAttempt1 = TestCase (assertEqual "attempt 5 5 5" False (attempt 5 5 5))
+testAttempt2 = TestCase (assertEqual "attempt 5 5 3" False (attempt 5 5 3))
+testAttempt3 = TestCase (assertEqual "attempt 3 5 3" False (attempt 3 5 3)) -- fails
+testAttempt4 = TestCase (assertEqual "attempt 3 5 5" False (attempt 3 5 5))
+testAttempt5 = TestCase (assertEqual "attempt 2 3 5" True  (attempt 2 3 5))
+testAttempt6 = TestCase (assertEqual "attempt -5 5 0" True  (attempt (-5) 5 0))
+
+
+testsAttempt = TestList [testAttempt1 , testAttempt2, testAttempt3, testAttempt4,
+                          testAttempt5, testAttempt6]
+
+-- Faulty function, it doesn't catch the 3 5 3 case since it doesn't test m /= p case
+
+
+-- Ex 4.38  - test power of two: from ex 4.32
+
+powerOfTwo' :: Integer -> Integer
+powerOfTwo' n
+  | n==0           = 1
+  | n==1           = 2
+  | mod n 2 == 0   = powerOfTwo' (div n 2) *
+                     powerOfTwo' (div n 2)
+  | otherwise      = 2 * powerOfTwo (div n 2) *
+                     powerOfTwo' (div n 2)
+
+testPowerOfTwo1 = TestCase (assertEqual "powerOfTwo' 0"  1  (powerOfTwo' 0))
+testPowerOfTwo2 = TestCase (assertEqual "powerOfTwo' 1"  2  (powerOfTwo' 1))
+testPowerOfTwo3 = TestCase (assertEqual "powerOfTwo' 2"  4  (powerOfTwo' 2))
+testPowerOfTwo4 = TestCase (assertEqual "powerOfTwo' 3"  8  (powerOfTwo' 3))
+testPowerOfTwo5 = TestCase (assertEqual "powerOfTwo' 4" 16  (powerOfTwo' 4))
+
+testsPowerOfTwo = TestList [testPowerOfTwo1, testPowerOfTwo2, testPowerOfTwo3, testPowerOfTwo4, testPowerOfTwo5]
+
