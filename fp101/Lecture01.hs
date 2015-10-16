@@ -63,4 +63,3 @@ average ns  = sum ns `div` length ns
 -- :type expr    show type of expr
 -- :?            help - show all commands
 -- :quit         quit GHCi
-
