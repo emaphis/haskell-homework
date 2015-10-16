@@ -5,7 +5,7 @@ description:         Please see README.md
 homepage:            http://github.com/emaphis/thompson
 license:             BSD3
 license-file:        LICENSE
-author:              Author name here
+author:              Ed Maphis
 maintainer:          example@example.com
 copyright:           2010 Author Here
 category:            Education
@@ -41,7 +41,8 @@ library
                 Usepictures
                 Chapter3
                 Chapter4
+                Chapter5
 
 source-repository head
   type:     git
-  location: https://github.com/githubuser/thompson
+  location: https://github.com/emaphis/thompson
