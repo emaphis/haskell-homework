@@ -42,6 +42,8 @@ library
                 Chapter3
                 Chapter4
                 Chapter5
+--                fp101//Lecture00
+--                fp101//Lecture01
 
 source-repository head
   type:     git
