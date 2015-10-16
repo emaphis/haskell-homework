@@ -26,7 +26,7 @@ fac1 :: Integer -> Integer
 fac1 0 = 1
 fac1 n = n * fac1 (n-1)
 
-
+-- 1 1 2 3 5 8 13 21 34 55 89 144 ...
 fibo :: Integer -> Integer
 fibo 0 = 0
 fibo 1 = 1
