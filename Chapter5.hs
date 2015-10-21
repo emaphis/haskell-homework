@@ -3,6 +3,7 @@
 module Chapter5 where
 import Test.HUnit
 import Test.QuickCheck
+import Data.Char
 
 -- tuple - combination of a fixed number of things of various types
 -- list - a variable number of things of the same type
@@ -276,3 +277,206 @@ move x y (Rectangle' h w (Point x1 y1)) =
     Rectangle' h w (Point (x1+x) (y1+y))
 move x y (Triangle' a b c (Point x1 y1)) =
      Triangle' a b c (Point (x1+x) (y1+y))
+
+
+-- Ex 5.13  TODO: don't know how, yet.
+
+
+-- Ex 5.14
+
+data House = Name String |
+             Number Integer
+             deriving (Show)
+
+toText :: House -> String
+toText (Name h)   = h
+toText (Number a) = show a
+
+data Address = Address House String String
+             deriving (Show)
+
+someHouse = Number 7923
+someAddress = Address someHouse "Buster Dr" "Lamesville"
+
+
+
+--  5.5 Lists in Haskell
+
+list1 = [1,2,3,4,1,4] :: [Integer]
+list2 = [True]  :: [Bool]
+
+list3 = ['a', 'a', 'b']  :: String
+list4 = "aab" :: String
+
+list5 = [fastFib, fastFib] :: [Integer -> Integer]
+list6 = [[12,2], [2,12],[]]  :: [[Integer]]
+
+
+-- The String type
+
+-- type String = [Char]
+
+-- Exercises
+
+-- Ex 5.15  what is the value of:
+
+list7 = [0, 0.1 .. 1]
+
+-- [0.0,0.1,0.2,0.30000000000000004,0.4000000000000001,0.5000000000000001,0.6000000000000001,0.7000000000000001,0.8,0.9,1.0]
+
+
+-- Ex 5.16  how many items to the following lists contain
+
+list8  = [2,3]   -- 2
+list9  = [[2,3]]  -- 1 -- type:  [[Integer]]
+
+
+-- Ex 5.17 evaluating bad lists
+
+-- [2 .. 2] -- 2
+-- [2,7 .. 4] -- 2
+
+
+-- List comprehensions
+
+
+-- Examples
+
+-- 1.
+ex = [2,4,7]
+list10 = [2*n | n<-ex] -- 'Take all 2*n where n comes from ex.'
+list10a = [2*n | n<-[2,4,7]]
+
+-- 2.
+
+isEven :: Integer -> Bool
+isEven m = m `mod` 2 == 0
+
+list11 = [isEven n | n<-ex] -- [True,True,False]
+
+-- 3. a generator may have more than one test
+
+-- 'Take all 2*n where n comes from ex, n is even and greater than 3.'
+list12 = [2*n | n <- ex, isEven n, n>3]
+
+
+-- 4. patterns:
+
+addPairs :: [(Integer,Integer)] -> [Integer]
+addPairs pairList = [m+n | (m,n) <- pairList]
+
+ex2 = [(2,3),(2,1),(7,8)]
+
+list13 = addPairs ex2   -- [5,3,15]
+
+
+-- 5. add tests
+
+addOrdPairs :: [(Integer,Integer)] -> [Integer]
+addOrdPairs pairList = [m+n | (m,n) <- pairList, m<n]
+
+list14 = addOrdPairs ex2  -- [5,15]
+
+
+-- 6. filtering digits
+
+digits :: String -> String
+digits st = [ch | ch<-st, isDigit ch]
+
+
+-- 7.  list comprehensions can form part of a larget definition
+
+allEven, allOdd :: [Integer] -> Bool
+allEven xs = xs == [x | x<-xs, isEven x]
+allOdd  xs = [] == [x | x<-xs, isEven x]
+
+
+-- 8.
+
+totalRadii :: [Shape] -> Float
+totalRadii shapes = sum [r | Circle r <- shapes]
+
+flt1 = totalRadii [Circle 2.1, Rectangle 2.1 3.2, Circle 4.7]
+-- => 6.8
+
+-- extract all of the singleton items froma list
+
+sings :: [[Integer]] -> [Integer]
+sings xss = [x | [x] <- xss]  -- match on singletons
+
+list15 = sings [[],[1],[2,3],[4],[5,6,7],[8]]
+--  [1,4,8]
+
+
+-- Exercises
+
+-- Ex 5.18. - double all in a list
+
+doubleAll :: [Integer] -> [Integer]
+doubleAll xs = [2*x | x <-xs]
+
+
+-- Ex. 5.19 - capitalize String
+
+capitalize :: String -> String
+capitalize str = [toUpper c | c<-str]
+
+
+-- remove all not letters from the string
+capitalizeLetters :: String -> String
+capitalizeLetters str = [toUpper c | c<-str, isAlpha c]
+
+
+-- Ex 5.20  - divisors of a number
+
+divisors :: Integer -> [Integer]
+divisors n = [m | m<-[2 .. n-1], (n `mod` m) == 0]
+
+isPrime :: Integer -> Bool
+isPrime n = divisors n == []
+
+
+-- Ex 5.21
+
+matches :: Integer -> [Integer] -> [Integer]
+matches n xs = [x | x<-xs, x==n]
+
+elem' :: Integer -> [Integer] -> Bool
+elem' n xs = length (matches n xs) > 0
+
+
+-- Ex 5.22
+
+onSeparateLines :: [String] -> String
+onSeparateLines xs = concat [str ++ "\n" | str<-xs]
+
+
+-- Ex 5.23 copy a string 'n' times
+
+duplicate :: String -> Integer -> String
+duplicate str n = [st |  i <- [1..n], st<-str]
+
+
+-- Ex 5.24  -- right justify a string
+
+linelength = 12
+
+pushRight :: String -> String
+pushRight str = [' ' | i<- [1 .. linelength - (length str)]] ++ str
+
+
+-- Ex 5.25  pushRight doesn't handle when 'str' is longer than 'linelength'
+
+
+-- Ex 5.26
+
+fibTable :: Integer -> String
+fibTable n = onSeparateLines (["n" ++ pushRight "fib n"] ++
+                             [show m ++ pushRight (show (fastFib i)) | i<-[1..n]])
+
+-- putStr (fibTable 10)
+
+
+
+-- 5.7 - A library database
+
