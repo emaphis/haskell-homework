@@ -433,7 +433,7 @@ divisors :: Integer -> [Integer]
 divisors n = [m | m<-[2 .. n-1], (n `mod` m) == 0]
 
 isPrime :: Integer -> Bool
-isPrime n = divisors n == []
+isPrime n = null (divisors n)
 
 
 -- Ex 5.21
@@ -442,19 +442,22 @@ matches :: Integer -> [Integer] -> [Integer]
 matches n xs = [x | x<-xs, x==n]
 
 elem' :: Integer -> [Integer] -> Bool
-elem' n xs = length (matches n xs) > 0
+elem' n xs = not (null (matches n xs))
 
 
 -- Ex 5.22
 
 onSeparateLines :: [String] -> String
-onSeparateLines xs = concat [str ++ "\n" | str<-xs]
+--onSeparateLines xs = concat [str ++ "\n" | str <- xs]
+-- use concat to flatten -  concat [String] => String
+
+onSeparateLines xs = [ch | str <- xs, ch <- str ++ "\n"]
 
 
 -- Ex 5.23 copy a string 'n' times
 
 duplicate :: String -> Integer -> String
-duplicate str n = [st |  i <- [1..n], st<-str]
+duplicate str n = [ch |  _ <- [1..n], ch <- str]
 
 
 -- Ex 5.24  -- right justify a string
@@ -462,21 +465,204 @@ duplicate str n = [st |  i <- [1..n], st<-str]
 linelength = 12
 
 pushRight :: String -> String
-pushRight str = [' ' | i<- [1 .. linelength - (length str)]] ++ str
+pushRight str = [' ' | _ <- [1 .. n]] ++ str
+                where n = linelength - length str
 
 
 -- Ex 5.25  pushRight doesn't handle when 'str' is longer than 'linelength'
+--          or negative lineLength's
 
 
 -- Ex 5.26
 
 fibTable :: Integer -> String
-fibTable n = onSeparateLines (["n" ++ pushRight "fib n"] ++
-                             [show m ++ pushRight (show (fastFib i)) | i<-[1..n]])
+fibTable n =
+  onSeparateLines (("n" ++ pushRight "fib n") :
+                   [show i ++ pushRight (show (fastFib i)) | i<-[1..n]])
 
 -- putStr (fibTable 10)
 
 
 
+-------------------------------------
 -- 5.7 - A library database
 
+
+-- Types
+
+type Person = String
+type Book   = String
+
+-- Modeling possibilities
+-- (Person,Book) - pair
+-- data Loan = Loan Person Bool  - a data type
+-- (Person, [Book])  - a person with a list of books
+-- ([Person], Book)  - the other way
+
+type Database = [(Person, Book)]
+
+
+-- an example database
+
+exampleBase :: Database
+exampleBase =
+    [("Alice", "Tintin"), ("Anna", "Little Women"),
+     ("Alice", "Asterix"), ("Rory", "Tintin")]
+
+
+-- Query functions:
+
+books :: Database -> Person -> [Book]
+books dBase findPerson = [book | (person,book) <- dBase, person == findPerson]
+
+borrowers :: Database -> Book -> [Person]
+borrowers dBase findBook = [person | (person,book)<-dBase, book == findBook]
+
+borrowed :: Database -> Book -> Bool
+borrowed dBase findBook = not (null (borrowers dBase findBook))
+
+numBorrowed :: Database -> Person -> Int
+numBorrowed dBase findPerson = sum [i | i<-[1], (person,_) <- dBase, person == findPerson]
+-- numBorrowed dBase findPerson  = length (books dBase findPerson)
+
+-- update functions
+
+makeLoan :: Database -> Person -> Book -> Database
+makeLoan dBase pers bk = (pers,bk) :  dBase
+--makeLoan dBase pers bk = [ (pers,bk) ] ++ dBase
+
+
+returnLoan :: Database -> Person -> Book -> Database
+returnLoan dBase pers bk
+  = [pair | pair <- dBase, pair /= (pers,bk)]
+
+
+-- Testing
+
+test1 :: Bool
+test1 = borrowed exampleBase "Asterix"
+
+test2 :: Database
+test2 = makeLoan exampleBase "Alice" "Rotten Romans"
+
+
+-- Testing in Quickcheck
+
+-- If we loan bk to pers and then lookup the books loaned to pers,
+-- then bk should be in that list:
+prop_db1 :: Database -> Person -> Book -> Bool
+prop_db1 dBase pers bk =
+  elem bk loanedAfterLoan == True
+    where
+      afterLoan = makeLoan dBase pers bk
+      loanedAfterLoan = books afterLoan pers
+
+-- If we return the loan of bk to pers and then lookup the books loaned
+-- to pers, then bk should be not in that list:
+prop_db2 :: Database -> Person -> Book -> Bool
+prop_db2 dBase pers bk =
+  elem bk loanedAfterReturn == False
+    where
+      afterReturn = returnLoan dBase pers bk
+      loanedAfterReturn = books afterReturn pers
+
+
+
+-- Exercises
+
+-- Ex 5.27 -- maybe later :-)
+
+
+-- Ex 5.28 - define borrowers, borrowed, and numborrowed
+---          see above
+
+
+-- Ex 5.29 - maybe later.
+
+
+-- Ex 5.30  -- Loan data type
+
+data Loan = Loan Person Book
+            deriving (Eq,Show)
+
+type Database2 = [Loan]
+
+exampleBase2 :: Database2
+exampleBase2 =
+    [Loan "Alice" "Tintin",  Loan "Anna" "Little Women",
+     Loan "Alice" "Asterix", Loan "Rory" "Tintin"]
+
+
+books2 :: Database2 -> Person -> [Book]
+books2 dBase findPerson = [book | (Loan person book) <- dBase, person == findPerson]
+
+borrowers2 :: Database2 -> Book -> [Person]
+borrowers2 dBase findBook = [person | (Loan person book)<-dBase, book == findBook]
+
+borrowed2 :: Database2 -> Book -> Bool
+borrowed2 dBase findBook = not (null (borrowers2 dBase findBook))
+
+numBorrowed2 :: Database2 -> Person -> Int
+--numBorrowed2 dBase findPerson = sum [i | i<-[1], (Loan person _) <- dBase, person == findPerson]
+numBorrowed2 dBase findPerson  = length (books2 dBase findPerson)
+
+-- update functions
+
+makeLoan2 :: Database2 -> Person -> Book -> Database2
+makeLoan2 dBase pers bk = Loan pers bk :  dBase
+-- makeLoan2 dBase pers bk = [ (Loan pers bk) ] ++ dBase
+
+
+returnLoan2 :: Database2 -> Person -> Book -> Database2
+returnLoan2 dBase pers bk
+  = [loan | loan <- dBase, loan /= Loan pers bk]
+
+
+-- Ex 5.31 - define quickcheck property
+
+-- Suppose that a particular bk is not loaned to a pers. Now make a
+-- random loan of bk2 to pers2. bk should still not be loaned to pers.
+-- TODO:  not sure yet.
+prop_db3 :: Database -> Person -> Book -> Book -> Bool
+prop_db3 dBase pers bk rand_book =
+  elem bk loanedAfterReturn == False
+    where
+      afterReturn = returnLoan dBase pers bk
+      loanedAfterReturn = books afterReturn pers
+
+
+-- Ex 5.32
+type Database3  = [(Person, [Book])]
+
+exampleBase3 :: Database3
+exampleBase3 = [("Alice", ["Asterix", "Tintin"]),
+                ("Rory",  ["Tintin"]),
+                ("Anna",  ["Little Women"])]
+
+books3 :: Database3 -> Person -> [Book]  -- use concat to flatten [[Book]]
+books3 dBase findPerson = concat [booklst | (person, booklst) <- dBase, person == findPerson]
+
+borrowers3 :: Database3 -> Book -> [Person]
+borrowers3 dBase findBook =
+  [person | (person, booklst)<-dBase, book<-booklst, book == findBook]
+
+borrowed3 :: Database3 -> Book -> Bool
+borrowed3 dBase findBook = not (null (borrowers3 dBase findBook))
+
+numBorrowed3 :: Database3 -> Person -> Int
+--numBorrowed3 dBase findPerson = sum [i | i<-[1], (person, _) <- dBase, person == findPerson]
+numBorrowed3 dBase findPerson  = length (books3 dBase findPerson)
+
+-- update functions
+
+--makeLoan3 :: Database -> Person -> Book -> Database2
+--makeLoan3 dBase pers bk = (pers, bk) :  dBase
+--makeLoan3 dBase pers bk = [ (pers, bk) ] ++ dBase
+
+--returnLoan3 :: Database3 -> Person -> Book -> Database2
+--returnLoan3 dBase pers bk
+--  = [(person, booklst) | (person, booklst) <- dBase, (person, book) /= (pers, bk)]
+
+-- The update funtions would be too hard to do at the present stage.  You have to
+-- lookup the recorde, then delete it, create a new updated record, then add it
+-- back to the db list.
