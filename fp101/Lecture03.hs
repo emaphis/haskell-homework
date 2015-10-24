@@ -53,6 +53,10 @@ _    &&* _     = False
 True  &&^ b  = b
 False &&^ _  = False
 
+(&&#)   :: Bool -> Bool -> Bool
+b &&# c | b==c       = b
+        | otherwise  = False
+
 -- Tuple patterns
 -- must match tuples of the same arity
 
