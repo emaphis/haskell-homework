@@ -223,3 +223,104 @@ test_remove fn =
 -- copy the x'th element
 funct   :: Int -> [a] -> [a]
 funct x xs = take (x+1) xs ++ drop x xs
+
+
+
+-- Lab 03  - Types - How to recognize them
+
+
+-- Ex (0)
+e0 = [False, True, False, True] :: [Bool]
+
+
+-- Ex (1)
+
+e1 = [[1,2], [3,4]]  :: Num t => [[t]]
+
+-- [[Integer]]
+-- [Int]
+-- Num t => [[t]]
+
+-- Ex (2)  -- may be trouble
+
+e2 = [[[1, 2, 3]], [[3, 4, 5]]] :: [[[Integer]]]
+
+-- [[[Integer]]]
+-- [[[Int]]]
+-- Num t => [[[t]]]
+
+
+-- Ex (3)
+e3 :: Num a => a -> a
+e3 x = x * 2
+
+
+-- Ex (4)
+e4 :: (a,b) -> a
+e4 (x, y) = x
+
+
+-- Ex (5)
+
+e5 :: (a, b, c) -> c
+e5 (x, y, z) = z
+
+
+-- Ex (6)
+
+e6 :: Num a => a -> a -> a
+e6 x y = x * y
+
+
+-- Ex (7)
+
+e7 :: (a, b) -> (b, a)
+e7 (x, y) = (y, x)
+
+
+-- Ex (8)
+
+e8 :: a -> b -> (b, a)
+e8 x y = (y, x)
+
+
+-- Ex (9)
+
+e9 :: [t] -> (t, Bool)
+e9 [x, y] = (x, True)
+
+
+-- Ex (10)
+
+e10 :: (a,a) -> [a]
+e10 (x, y) = [x, y]
+
+
+-- Ex (11)
+
+e11 :: (Char, Bool)
+e11 = ('\a', True)
+
+
+-- Ex (12)
+
+e12 :: [(Char, Int)]
+e12 = [('\a', 1)]
+
+
+-- Ex (13)
+
+e13 :: Int -> Int -> Int
+e13 x y = x + y * y
+
+
+-- Ex (14)
+
+e14 :: ([Char], [Float])
+e14 = ("Haskell", [3.1, 3,14, 3.145])
+
+
+-- Ex (15)
+
+e15 :: [a] -> [b] -> (a, b)
+e15 xs ys = (head xs, head ys)
