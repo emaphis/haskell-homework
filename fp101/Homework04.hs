@@ -26,7 +26,7 @@ test_sum100 x  = x == 338350
 
 
 -- Ex (1)
--- Ex 5.2 - relicate
+-- Ex 5.2 - replicate
 
 replicate', replicate4  :: Int -> a -> [a]
 replicate' n x = [x | _ <- [1 .. n]]
@@ -56,7 +56,7 @@ test_replicate fn =
 
 
 -- Ex (2)
--- Ex 5.3 - pythoagorean triple:
+-- Ex 5.3 - Pythagorean triple:
 
 pyths,pyths1,pyths2,pyths3  :: Int -> [(Int,Int,Int)]
 pyths n =
@@ -120,7 +120,7 @@ lsta = [z | z <- [[(x,y) | y <- [4,5,6]] | x<- [1,2,3]]]
 
 
 -- Ex (5)
--- Ex 5.6  - redefine postions using find.
+-- Ex 5.6  - redefine positions using find.
 
 find    :: Eq a => a -> [(a,b)] -> [b]
 find k t = [v | (k',v) <- t, k==k']
@@ -217,7 +217,7 @@ xs = 1 : [x + 1 | x <- xs]  -- infinite list
 riffle xs ys = concat [[x,y] | (x,y) <- xs `zip` ys]
 
 
--- Ex (12)  -- devisors
+-- Ex (12)  -- divisors
 
 divides :: Int -> Int -> Bool
 divides n m  = n `mod` m  == 0

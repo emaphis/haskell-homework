@@ -4,7 +4,7 @@
 module Lecture04 where
 import Data.Char
 
--- List comprehensions are code that manipulat data structures.
+-- List comprehensions are code that manipulate data structures.
 
 -- 4.1   Generators
 
@@ -119,6 +119,8 @@ lowers  :: String -> Int
 lowers xs =
   length [x | x <- xs, isLower x]
 
+count     :: Char -> String -> Int
+count x xs = length [x' | x' <- xs, x==x']
 
 
 
