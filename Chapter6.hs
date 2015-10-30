@@ -68,8 +68,12 @@ beside :: Picture -> Picture -> Picture
 beside picL picR
     = [lineL ++ lineR | (lineL,lineR) <- zip picL picR]
 
+rotate :: Picture -> Picture
+rotate p = flipH (flipV p)
+
+
 invertChar :: Char -> Char
-invertChar ch = if ch=='.' then '#' else '.'
+invertChar ch  =   if ch=='.' then '#' else '.'
 
 invertLine :: [Char] -> [Char]
 invertLine line
@@ -191,20 +195,36 @@ scale p1 n
 
 
 -- Ex 6.11 - correct the property prop_aboveFlipH - above
+-- ok.
 
 -- Ex 6.12
+prop_besideFlipV :: Picture -> Picture -> Bool
+prop_besideFlipV  p1 p2 =
+    flipV (p1 `beside` p2) == flipV p2 `beside` flipV p1
+
+prop_besideFlipH :: Picture -> Picture -> Property
+prop_besideFlipH p1 p2 =
+    length p1 == length p2
+    ==>
+    flipH (p1 `beside` p2) == flipH p1 `beside` flipH p2
+
+-- What! -> *** Gave up! Passed only 44 tests.
 
 
 -- Ex 6.13 - four pictures using above and beside
 prop_aboveBeside :: Picture -> Bool
 prop_aboveBeside pic =
-    (pic `above` pic) `beside` (pic `above` pic) ==
+    (pic `above` pic) `beside` (pic `above` pic)
+    ==
     (pic `beside` pic) `above` (pic `beside` pic)
+
 
 -- Ex 6.14 -- property of rotate90
 
-prop_rotate90 :: Picture -> Bool
+prop_rotate90 :: Picture -> Property
 prop_rotate90 p =
+    rectangular p && notElem "" p
+    ==>
     p == rotate90 (rotate90 (rotate90 (rotate90 p)))
 
 
@@ -215,3 +235,68 @@ prop_invertColor p1 =
     p1 == invertColour (invertColour p1)
 -- no, it doesn't hold for randomly generated data
 
+
+-- Ex 6.16 analogue ot prop_aboveBeside3Correct
+
+prop_besideAbove3Correct :: Picture -> Picture -> Bool
+prop_besideAbove3Correct n s =
+    (n `beside` n) `above` (s `beside` s)
+    ==
+    (n `above` s) `beside` (n `above` s)
+
+-- No, don't seem to need the filter. hmmm.
+
+
+
+-- 6.5 Extended exercise: alternative implementations
+
+-- Ex 6.17
+
+-- Ex 6.18
+
+
+-- Ex 6.19  Binary pictures
+
+type PictureB = [[Bool]]   -- almost a bit map
+
+black :: Bool
+black = True
+
+white :: Bool
+white = False
+
+
+flipHB :: PictureB -> PictureB
+flipHB = reverse
+
+aboveB :: PictureB -> PictureB -> PictureB
+aboveB = (++)
+
+flipVB :: PictureB -> PictureB
+flipVB pic = [reverse line | line <- pic]
+
+
+besideB :: PictureB -> PictureB -> PictureB
+besideB pL pR =
+    [lineL ++ lineR | (lineL,lineR) <- zip pL pR]
+
+
+rotateB :: PictureB -> PictureB
+rotateB p =  flipHB (flipVB p)
+
+
+invertCharB :: Bool -> Bool
+invertCharB   = not     -- simple, well nigh unnessary
+
+invertLineB :: [Bool] -> [Bool]
+invertLineB line =
+    [invertCharB ch | ch <- line]
+
+invertColourB :: PictureB -> PictureB
+invertColourB pic =
+    [invertLineB line | line <- pic]
+
+
+
+printPictureB :: PictureB -> IO ()
+printPictureB p = putStr (concat [])
