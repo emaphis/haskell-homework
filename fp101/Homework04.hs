@@ -217,7 +217,7 @@ xs = 1 : [x + 1 | x <- xs]  -- infinite list
 riffle xs ys = concat [[x,y] | (x,y) <- xs `zip` ys]
 
 
--- Ex (12)  -- divisors
+-- Ex (13)  -- divisors
 
 divides :: Int -> Int -> Bool
 divides n m  = n `mod` m  == 0
