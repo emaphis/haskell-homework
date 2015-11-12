@@ -6,7 +6,7 @@ import Data.Char
 
 -- List comprehensions are code that manipulate data structures.
 
--- 4.1   Generators
+-- 4.1   Generatorsg
 
 -- {x2 | x ∈ {1 . . 5}}
 

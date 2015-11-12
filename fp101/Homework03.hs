@@ -186,7 +186,7 @@ test_and fn =
 
 mult, mult3 :: Int -> (Int -> (Int -> Int))
 
--- mult1 x y z = \x -> (\y -> (\z -> x * z))
+-- mult1 x y z = \x -> (\y -> (\z -> x * y *z))
 
 -- mult2 = \x -> (x * \y -> (y * \z -> z))
 

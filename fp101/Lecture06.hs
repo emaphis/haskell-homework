@@ -176,7 +176,8 @@ odd1 = not |> even
 
 twice2 f = f . f
 
-sumsqreven1 = sum . map (^2) . filter even
+sumsqrevne1 :: [Integer] -> Integer
+sumsqrevne1 = sum . map (^2) . filter even
 
 -- compose a list of functions
 compose :: [a-> a] -> (a -> a)
