@@ -1,5 +1,5 @@
 -- | Lecture 6 -- Higher Order Functions
--- | Book Chapter 6
+-- | Book Chapter 7
 
 module Lecture06 where
 import Data.Char (ord,chr)
