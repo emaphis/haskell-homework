@@ -297,9 +297,9 @@ mapM7 f (a:as)
 mapM8 _ [] = return []
 mapM8 f (a:as)
   = f a >>=
-  	  \ b ->
-  	    do bs <- mapM8 f as
-  	       return (bs ++ [b])
+    \ b ->
+      do bs <- mapM8 f as
+         return (bs ++ [b])
 
 -- test mapM
 -- mapM putChar ['a','b','c']

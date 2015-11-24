@@ -83,20 +83,20 @@ eval4 (Div x y)    = eval4 x >>= (\n ->
 -- eval using 'do'
 
 --eval5            :: Expr -> Maybe Int
---eval5 (Val n)     = Just n
---eval5 (Div x y)   = do n <- eval5 x
---                       m <- eval5 y
---                       safediv n m
+eval5 (Val n)     = Just n
+eval5 (Div x y)   = do n <- eval5 x
+                       m <- eval5 y
+                       safediv n m
 
 
 -- Monads in Haskell
 
 class Monad1 m where
   return :: a -> m a
-  (>>>=) :: m a -> (a -> m b) -> m b
+  (>>=) :: m a -> (a -> m b) -> m b
 
 instance Monad1 Maybe where
   return x     = Just x
 
-  Nothing  >>>= _  = Nothing
-  (Just x) >>>= f  = f x
+  Nothing  >>= _  = Nothing
+  (Just x) >>= f  = f x
