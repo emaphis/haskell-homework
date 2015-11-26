@@ -200,6 +200,15 @@ mult = \x -> \y -> \z -> x * y * z
 -- Ex (5)  -- f x g y means:
 --            ((f x) g) y
 
+f :: Int -> (Int -> Int) -> Int -> Int
+f x g y = x + g y
+
+g :: Int -> Int
+g y  = y + 1
+
+h :: Int -> Int -> Int
+h x y = ((f x) g) y
+
 
 -- Ex (6)  -  f :: (a -> a) -> a
 --   takes a function as an argument
