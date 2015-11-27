@@ -319,36 +319,78 @@ filterM' p (x:xs)
 
 -- Ex (9)  - foldLeftM
 
-foldLeftM :: Monad m => (a -> b -> m a) -> a -> [b] -> m a
+foldl' :: (a -> b -> a) -> a -> [b] -> a
+foldl' f v []  = v
+foldl' f v (x:xs) = foldl' f (f v x) xs
 
-foldLeftM f b0 ls = step b0 ls
-  where
-    step b []         = return b
-    step b (a:as)     = f b a >>= (step `flip` as)
+foldLeftM :: Monad m => (a -> b -> m a) -> a -> [b] -> m a
+foldLeftM f v []     = return v
+foldLeftM f v (x:xs) = f v x >>= \v' -> foldLeftM f v' xs
+
+-- foldLeftM f b0 ls = step b0 ls
+--   where
+--     step b []         = return b
+--     step b (a:as)     = f b a >>= (step `flip` as)
 
 io9 = foldLeftM (\a b -> putChar b >> return (b : a ++ [b])) [] "haskell" >>= \r -> putStrLn r
 -- => haskelllleksahhaskell
 
+binSmalls :: Int -> Int -> Maybe Int
+binSmalls acc x
+  | x > 9       = Nothing
+  | otherwise   = Just (acc + x)
+
 
 -- Ex (10)  - foldRightM
 
-foldRightM :: Monad m => (a -> b -> m b) -> b -> [a] -> m b
+foldr' :: (a -> b -> b) -> b -> [a] -> b
+foldr' f v []     = v
+foldr' f v (x:xs) = f x $ foldr' f v xs
 
-foldRightM f b0 ls = step b0 ls where
-    step b []         = return b
-    step b (a:as)     = f a =<< step b as
+foldRightM :: Monad m => (a -> b -> m b) -> b -> [a] -> m b
+foldRightM f v []  = return v
+foldRightM f v (x:xs) = f x =<< foldRightM f v xs
+
+-- foldRightM f b0 ls = step b0 ls where
+--     step b []         = return b
+--     step b (a:as)     = f a =<< step b as
 
 
 io10 = foldRightM (\a b -> putChar a >> return (a:b)) [] (show [1,3..10]) >>= \r -> putStrLn r
 -- => ]9,7,5,3,1[[1,3,5,7,9]
 
 
--- Ex (10)  - liftM
+-- Ex (11)  - liftM
 
-liftM1 :: Monad m => (a -> b) -> m a -> m b
+liftM1,liftM3,liftM5,liftM6
+  :: Monad m => (a -> b) -> m a -> m b
 
--- compiles
+-- good
 liftM1 f m
   = do x <- m
        return (f x)
 
+-- bad - wrong type (=<<)
+liftM2 :: Monad m => (a -> m b) -> m a -> m b
+liftM2 f m = m >>= \ a -> f a
+
+-- good
+liftM3 f m = m >>= \ a -> return (f a)
+
+-- bad - wrong type
+liftM4 :: Monad m => (t -> a) -> t -> m a
+liftM4 f m = return (f m)
+
+-- bad but  compiles
+liftM5 f m = m >>= \a -> m >>= \ b -> return (f a)
+
+-- bad but compiles
+liftM6 f m = m >>= \ a -> m >>= \ b -> return (f b)
+
+-- bad  - actually mapM
+liftM7 :: Monad m => (a -> m b) -> a -> m [b]
+liftM7 f m = mapM f [m]
+
+-- bad  - wrong type
+liftM8 :: Monad m => (a -> b) -> (a -> c) -> a -> m b
+liftM8 f m = m >> \ a -> return (f a)

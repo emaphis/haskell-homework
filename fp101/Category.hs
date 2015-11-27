@@ -1,7 +1,8 @@
 -- | Functors, Applicatives, Monoids, Monads, oh yeah.
 
 module Category where
-
+import Data.Char
+import Data.List
 
 -- Functors
 
@@ -53,3 +54,16 @@ data Barry t k p = Barry {yabba :: p, dabba :: t k}
 
 instance Functor (Barry a b) where
   fmap f (Barry {yabba = x, dabba = y}) = Barry {yabba = f x, dabba = y}
+
+
+instance Functor1 IO where
+  fmap1 f action = do
+    result <- action
+    return (f result)
+
+-- wow
+add :: (->) Int Int
+add x  = x+1
+
+instance Functor1 ((->) r) where
+  fmap1 f g = (\x -> f (g x))
