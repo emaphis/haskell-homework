@@ -24,3 +24,7 @@
   "add 3 to a given number"
   (+ num 3))
 
+(defun fact (num)
+  "factorial of a given number"
+  (if (= num 1) 1
+      (* num (fact (- num 1)))))

@@ -123,7 +123,7 @@ fix = h fix
 -- Fix is Higher order, polymorphic, recursive
 
 
--- Ex 18
+-- Ex 18  - wow this is factorial.
 f18 ::  (Eq a, Num a) => (a -> a) -> a -> a
 f18 = \f n -> if (n == 0) then 1 else n * f (n - 1)
 

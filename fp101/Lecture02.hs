@@ -84,7 +84,7 @@ add'   :: Int -> (Int -> Int)
 add' x y = x+y
 
 -- functions with more than two arguments can be curried
--- by returning neted functions:
+-- by returning nested functions:
 mult    :: Int -> (Int -> (Int -> Int))
 mult x y z = x*y*z
 
