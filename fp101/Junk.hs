@@ -24,11 +24,6 @@ test1 max min =
 test2 = [(x,y) | x <- [1..6], y<-[x..6], x<y]
 
 
-n = a `div` length xs
-    where
-      a=10
-      xs=[1,2,3,4,5]
-
 -- More Junk
 
 pair :: a -> b -> (a,b)
@@ -46,3 +41,27 @@ eval (Val n)   = Just n
 eval (Div x y) = do n <- eval x
                     m <- eval y
                     safediv n m
+
+
+unfold :: (a -> Bool) -> (a -> b) -> (a -> a) -> a -> [b]
+unfold p h t x
+  | p x        = []
+  | otherwise  = h x : unfold p h t (t x)
+
+
+type Bit = Integer
+int2bin :: Integer -> [Bit]
+int2bin 0 = []
+int2bin n = n `mod` 2 : int2bin (n `div` 2)
+
+int2bin' :: Integer -> [Integer]
+int2bin' = unfold (==0) (`mod` 2) (`div` 2)
+
+
+-- unReturn :: Monad m => m a -> a
+-- unReturn m = do _ <- putStr "hell0"
+--                 a <- m
+--                 return a
+
+fn :: a -> b
+fn  = \ a -> undefined

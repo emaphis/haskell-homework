@@ -286,7 +286,7 @@ uncurry'' f (x,y) = f x y
 
 -- Ex 7.7  -- unfold
 -- Ex (11)
--- ecapsulates a pattern producint a list
+-- ecapsulates a pattern producing a list
 
 unfold :: (a -> Bool) -> (a -> b) -> (a -> a) -> a -> [b]
 unfold p h t x
