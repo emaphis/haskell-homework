@@ -7,20 +7,28 @@ module Lecture01 where
 -- Karate Kid: Wax on, wax off.
 -- Using GHC on homework is not cheeting, the compiler is there to help
 
+-- 2.1  The Hugs System
+
+
+-- 2.2  The Standard Prelude
+
 -- Lists:
--- head [1,2,3,4,5] == 1
--- tail [1,2,3,4,5] == [2,3,4,5]
--- [1,2,3,4,5] !! 2 == 3  --nth element
--- take 3 [1,2,3,4,5]  == [1,2,3]
--- drop 3 [1,2,3,4,5]  == [4,5]
--- length [1,2,3,4,5]  == 5
--- sum [1,2,3,4,5]     == 15
--- product [1,2,3,4,5] == 120
---  [1,2,3] ++[4,5] == [1,2,3,4,5]  -- append
---  reverse [1,2,3,4,5] == [5,4,3,2,1]
+int1  = head [1,2,3,4,5] == 1
+lst2  = tail [1,2,3,4,5] == [2,3,4,5]
+int3  = [1,2,3,4,5] !! 2 == 3  --nth element
+lst4  = take 3 [1,2,3,4,5]  == [1,2,3]
+lst5  = drop 3 [1,2,3,4,5]  == [4,5]
+--  xs == take n xs ++ drop n xs
+
+int6  = length [1,2,3,4,5]  == 5
+int7  = sum [1,2,3,4,5]     == 15
+int8  = product [1,2,3,4,5] == 120
+lst9  = [1,2,3] ++ [4,5] == [1,2,3,4,5]  -- append
+lst10 = reverse [1,2,3,4,5] == [5,4,3,2,1]
 
 
--- Function Application
+-- 2.3  Function Application
+
 -- f(a,b) + c d  - mathamatics
 -- f a b + c * d -- Haskell
 -- function application binds higher:
@@ -33,11 +41,20 @@ module Lecture01 where
 -- f(x)g(y)   f x * g y
 
 
--- Part 2 - scripts
+-- 2.4 - scripts
 
+double :: Int -> Int
 double x    = x + x
 
+quadruple :: Int -> Int
 quadruple x = double (double x)
+
+-- (f . g) x = f (g x)
+
+int10 = quadruple 10 == 40
+lst11 = take (double 2) [1,2,3,4,5,6]
+         == [1,2,3,4]
+
 
 factorial n = product [1..n]
 

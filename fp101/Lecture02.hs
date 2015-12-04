@@ -70,8 +70,11 @@ tuple6 = (True,['a','b'])   :: (Bool,[Char])
 
 -- Domain -> Range
 
-add      :: (Int,Int) -> Int
+add,add''     :: (Int,Int) -> Int
 add (x,y) = x+y
+
+-- lambda version
+add'' = \(x,y) -> x+y
 
 zeroto  :: Int -> [Int]
 zeroto n = [0..n]
@@ -80,8 +83,11 @@ zeroto n = [0..n]
 -- functions with multiple arguments are also possible by
 -- returning functions as results.
 
-add'   :: Int -> (Int -> Int)
+add',add2,add3 :: Int -> (Int -> Int)
 add' x y = x+y
+
+add2 x = \y -> x+y
+add3 = \x -> \y -> x+y
 
 -- functions with more than two arguments can be curried
 -- by returning nested functions:
@@ -111,7 +117,7 @@ take5 = take 5
 -- a function is polymorphic if it's type contains one
 -- or more type variables
 
--- length :: [a] -> Int   -- any type of list
+-- length :: [a] -> Int   -- any type 'a' of list
 int4 = length [1,3,5,7]
 int2 = length ["yes", "no"]
 int3 = length [isDigit, isLower, isUpper]

@@ -21,6 +21,7 @@ signum1 n  = if n < 0 then -1 else
 
 
 -- 4.3   Guarded equations
+
 abs2  :: Int -> Int
 abs2 n | n >= 0    = n
        | otherwise = -n
@@ -57,6 +58,11 @@ False &&^ _  = False
 b &&# c | b==c       = b
         | otherwise  = False
 
+-- Haskell is lazy
+f x = 4711
+int2 = f (True && undefined) == 4711
+
+
 -- Tuple patterns
 -- must match tuples of the same arity
 
@@ -69,6 +75,9 @@ snd' (_,y)  = y
 
 -- List pattern matching (x:xs)
 
+lst3 = [1,2,3,4] == 1:(2:(3:(4:[])))
+
+
 -- test if a list contains three characters and begins with 'a'
 test          :: [Char] -> Bool
 test ['a',_,_] = True
@@ -80,7 +89,7 @@ test2 ('a':_)  = True
 test2 _        = False
 
 
--- primary list functions
+-- primary list functions defined with pattern matcihg
 null'        :: [a] -> Bool
 null' []      = True
 null' (_:_)   = False
@@ -101,11 +110,13 @@ tail' (_:xs)  = xs
 --pred 0      = 0
 --pred (n + 1)  = n
 
+--fac 0 = 1
+--fac (n+1) = n+1 * fac n
 
 -- 4.5  Lambda expressions
 -- functions can be defined without naming
 
-int4 = (\x -> x + x) 2  -- => 4
+int4 = (\x -> x + x) 2 -- => 4
 
 
 double :: Integer -> Integer
@@ -126,8 +137,11 @@ int15 = add 10 5
 const'     :: a -> b -> a
 const' k _  = k
 
-const      :: a -> (b -> a)
-const k = \_ -> k
+const''     :: a -> (b -> a)
+const'' k = \_ -> k
+
+const5 ::  b -> Int
+const5  = const'' 5
 
 
 -- lambda expressions can be used ot avoid naming functions
