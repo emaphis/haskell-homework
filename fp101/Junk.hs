@@ -1,7 +1,7 @@
 module Junk where
 
 --import Char (isDigit)
-
+import System.IO
 
 exchange :: Integral a => a -> a
 exchange x =
@@ -65,3 +65,10 @@ int2bin' = unfold (==0) (`mod` 2) (`div` 2)
 
 fn :: a -> b
 fn  = \ a -> undefined
+
+
+getCh :: IO Char
+getCh = do hSetEcho stdin False
+           c <- getChar
+           hSetEcho stdin True
+           return c

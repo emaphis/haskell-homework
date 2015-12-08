@@ -6,9 +6,13 @@ import Data.Char
 
 -- List comprehensions are code that manipulate data structures.
 
--- 4.1   Generatorsg
+-- 4.1   Generators
 
 -- {x2 | x ∈ {1 . . 5}}
+
+-- lists are much more computationally convenient
+-- than sets.  functions have no notion of equality.
+-- sets can't contain duplicates and con't be ordered
 
 -- x <- [1..5] is a generator
 gen1 = [x^2 | x <- [1..5]]
@@ -21,7 +25,7 @@ gen3 = [(x,y) | y <- [4,5], x <- [1,2,3]]
 -- gen2 - [(1,4),(1,5),(2,4),(2,5),(3,4),(3,5)]
 -- gen3 - [(1,4),(2,4),(3,4),(1,5),(2,5),(3,5)]
 
-lsta = [[x]++[y] |  x <- "outer loop", y <- "inner loop" ]
+lsta = [[x]++[y] |  x <- "outer loop", y <- "inner loop"]
 
 -- generators can depend on other generators
 gen4 = [(x,y) | x <- [1..3], y <- [x..3]]
@@ -83,9 +87,13 @@ lst4 = find 'b' [('a',1), ('b',2),('c',3),('b',4)]
 
 
 -- 4.3   The zip function
+-- maps two lists to a list of pairs of corresponding  elements.
 --zip' :: [a] -> [b] -> [(a,b)]
 --zip' xs ys =
 --  [(x | x<-xs, y | y<-ys)]
+
+lst7 = zip ['a','b','c'] [1,2,3]
+-- [('a',1),('b',2),('c',3)]
 
 pairs :: [a] -> [(a,a)]
 pairs xs = zip xs (tail xs)

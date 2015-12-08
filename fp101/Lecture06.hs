@@ -18,9 +18,16 @@ twice'     :: (a -> a) -> a -> a
 twice' f x  = f (f x)
 -- twice' takes a function as it's first parameter
 
+twice''  :: (a -> a) -> a ->a
+twice'' f  = f . f
+
+quad :: Int -> Int
+quad  = twice' (\x -> x*2)
+
 -- programming idioms can be coded using HOF's
 -- domain specific languages can be defined as collections HOF's
 -- algerbrac properties of HOF's can be used to reason about programs
+
 
 -- 6.2  Processing lists
 
@@ -29,12 +36,20 @@ map1,map2 :: (a -> b) -> [a] -> [b]
 -- map using list comprehensions:
 map1 f xs = [f x | x <- xs]
 
+-- map using recursion
 map2 _ []     = []
 map2 f (x:xs) = f x : map f xs
 
+lst1 = map (+1) [1,3,5,7]
+-- [2,4,6,8]
+
+showEm  :: Show a => [a] -> [String]
+showEm   = map show
+
+
 filter0, filter1  :: (a -> Bool) -> [a] -> [a]
 
-filter0 p xs = [x | x <- xs, p x]
+filter0 p xs  = [x | x <- xs, p x]
 
 filter1 _ []  = []
 filter1 p (x:xs)
@@ -51,7 +66,7 @@ sumsqreven ns  = sum (map (^2)(filter even ns))
 -- f []     = _v
 -- f (x:xs) = x (f) f xs
 
-sum1 []          = 0             -- v = 0
+sum1 []          = 0              -- v = 0
 sum1 (x:xs)      = x + sum1 xs    -- (f) = +
 
 product1 []     = 1               -- v = 0
@@ -82,26 +97,39 @@ foldr2 f v (x:xs) = f x (foldr2 f v xs)
 
 -- homomorphism  -- structure of the list doesn't change
 
+product' :: Num a => [a] -> a
+product' = foldr (*) 1
+
 -- product [1,2,3]
--- procuct (*) 1 [1,2,3]
+-- product (*) 1 [1,2,3]
 -- product (*) 1 (1:(2"(3:[])))
 -- 1*(2*(3*1))  => 6
 
-length1,length2   :: [a] -> Int
+-- consume and return a list (silly)
+listId :: [a] -> [a]
+listId = foldr (:) []
+
+
+length1,length2,length4   :: [a] -> Int
 length1 []     = 0
 length1 (_:xs) = 1 + length1 xs
 
 length2 = foldr (\_ n -> 1+n) 0
 
--- lenght [1,2,3]
+-- length [1,2,3]
 -- length (1:(2:(2:[])))
 -- 1+(1+(1+0)) => 3
+
+length4 = sum . map (\_ -> 1)
+
 
 reverse1,reverse2,reverse3,reverse4
   :: [a] -> [a]
 
 reverse1 []     = []
 reverse1 (x:xs) = reverse1 xs ++ [x]
+
+-- (++ ys) = foldr (:) ys
 
 reverse2 []     = []
 reverse2 (x:xs) =  snoc x (reverse2 xs)
@@ -117,7 +145,7 @@ reverse4 = foldr snoc []
 -- replace each {:} by (:) and [] by 'ys'
 
 (+++) :: [a] -> [a] -> [a]
-(+++) = foldr (:) 
+(+++) = foldr (:)
 
 -- reverse [1,2,3]
 -- reverse (1:(2:(3:[])))
@@ -125,11 +153,11 @@ reverse4 = foldr snoc []
 -- [3,2,1]
 
 -- Why is foldr useful?
---  some recursive funtions on lists, such a sum a simpler
---  properties of functions defined using foldr can be proven
---   using algerbraic properties of foldr, fusion,
+--  some recursive functions on lists, such a sum are simpler
+--  properties of functions defined using foldr can be proved
+--   using algebraic properties of foldr such as fusion,
 --   banana split rule
--- advanced copiler optomizations can be used.
+-- advanced compiler optimizations can be used.
 
 
 -- 6.4  The foldl function
@@ -137,7 +165,7 @@ sum3 = sum' 0
        where
          sum' acc []     = acc
          sum' acc (x:xs) = sum'(x+acc) xs
-         
+
 -- sum [1,2,3]
 -- sum' 0 [1,2,3]
 -- sum' (1+0) [2,3]
@@ -167,12 +195,14 @@ foldl2 _ v []     = v
 foldl2 f v (x:xs) = foldl2 f (f v x) xs
 
 
--- 6.5  The compostion operator
+-- 6.5  The composition operator (.)
 (|>)  :: (b -> c) -> (a -> b) -> (a -> c)
 f |> g = \x -> f (g x)
 
-odd1 :: Int -> Bool
+odd1,odd2 :: Int -> Bool
 odd1 = not |> even
+
+odd2 x = not (even x)
 
 twice2 f = f . f
 
@@ -247,4 +277,3 @@ transmit  = decode . channel . encode
 
 channel  :: [Bit] -> [Bit]
 channel = id
-

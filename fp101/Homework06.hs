@@ -122,7 +122,7 @@ takeWhile3 p (x:xs)
   | p x        = takeWhile3 p xs
   | otherwise  = []
 
--- bad - reverse take whil
+-- bad - reverse take while
 takeWhile4 p = foldl (\ acc x -> if p x then x : acc else acc) []
 
 --  still bad
