@@ -1,6 +1,8 @@
 -- | Reworking homework
 
 module Homework where
+import Data.Char
+import Data.List
 
 -- Homework 2
 
@@ -259,3 +261,207 @@ filter1 p (x:xs)
   | otherwise  = filter1 p xs
 
 filter2 p = foldr (\a as -> if p a then a:as else as) []
+
+
+-- Exercise 08:
+
+-- Ex (1)  -- putStr'
+
+putStr',putStr2,putStr3   :: String -> IO ()
+
+putStr' [] = return ()
+putStr' (x:xs)  = do putChar x
+                     putStr' xs
+
+
+putStr1 :: [Char] -> IO [Char]
+putStr1 [] = return ""
+putStr1 (x:xs) = putChar x >> putStr1 xs
+
+
+putStr2 [] = return ()
+putStr2 (x:xs) = putChar x >> putStr2 xs
+
+putStr3 = foldr ((>>).putChar) (return ())
+
+
+-- Ex (2)
+
+putStrLn',putStrLn1,putStrLn2 :: String -> IO ()
+
+putStrLn' xs = do putStr xs
+                  putChar '\n'
+
+putStrLn1 xs = putStr xs >> putChar '\n'
+
+putStrLn2 xs = putStr xs >>= (\x -> putChar '\n')
+
+
+-- Ex (3)
+
+getLine' :: IO String
+
+getLine' = get ""
+
+get :: String -> IO String
+get xs = do x <- getChar
+            case x of
+              '\n' -> return xs
+              _ -> get (xs ++ [x])
+
+-- Ex (3)
+
+interact' :: (String -> String) -> IO ()
+interact' fn = do ln <- getLine'
+                  putStrLn' (fn ln)
+
+
+
+makeUpper :: String -> String
+makeUpper = map toUpper
+-- = foldr (\x -> (toUpper x) : xs) [] xs
+
+
+-- Ex (5)
+
+sequence_',sequence_1,sequence_2,sequence_3
+  :: Monad m => [m a] -> m ()
+
+sequence_' = foldr (>>) (return ())
+
+sequence_1 []   = return ()
+sequence_1 (x:xs)  = x >> sequence_1 xs
+
+sequence_2 []   = return ()
+sequence_2 (x:xs)  = x >>= (\_ -> sequence_2 xs)
+
+sequence_3 (m:ms)  = (foldl (>>) m ms) >> return ()
+
+
+-- Ex (6)
+
+sequence',sequence1 :: Monad m => [m a] -> m [a]
+
+sequence' [] = return []
+sequence' (x:xs) = x >>= \ a ->
+                          do as <- sequence' xs
+                             return (a:as)
+
+sequence1 = foldr func (return [])
+
+func :: Monad m => m a -> m [a] -> m [a]
+func mx mxs = do x  <- mx
+                 xs <- mxs
+                 return (x:xs)
+
+-- Ex (7)
+
+mapM',mapM1 :: Monad m => (a -> m b) -> [a] -> m [b]
+
+mapM' _ [] = return []
+mapM' fn (x:xs)  = do d <- fn x
+                      ds <- mapM' fn xs
+                      return (d:ds)
+
+--mapM1 fn xs = foldr (\d -> fn d : xs) (return []) xs
+
+mapM1 _ [] = return []
+mapM1 fn (x:xs) = fn x >>= (\d ->  mapM1 fn xs  >>= \ds -> return (d:ds))
+
+
+-- Ex (8)
+
+filterM' :: Monad m => (a -> m Bool) -> [a] -> m [a]
+
+filterM' _ []  = return []
+filterM' p (x:xs) = do bl <- p x
+                       rs <- filterM' p xs
+                       if bl then return (x:rs) else return rs
+                        --return r
+
+--pm :: Monad m => Integral a => a -> m Bool
+--pm x  = return (even x)
+
+
+-- Ex (9)
+
+foldl_ :: (b -> a -> b) -> b -> [a] -> b
+foldl_ _ a [] =  a
+foldl_ f a (x:xs) = foldl_ f (f a x) xs
+--foldl f a (x:xs) = foldl f (... f ... a ...) xs
+
+foldLeftM :: Monad m => (a -> b -> m a) -> a -> [b] -> m a
+foldLeftM _ a [] = return a
+--foldLeftM f a (x:xs) = foldLeftM f (f a x >>= \b -> return b) xs
+foldLeftM f a (x:xs) = f a x >>= \ b -> foldLeftM f b xs
+
+
+-- Ex (10)
+
+foldr_ :: (a -> b -> b) -> b -> [a] -> b
+foldr_ _ a [] = a
+foldr_ f a (x:xs) = f x (foldr_ f a xs)
+
+foldRightM :: Monad m => (a -> b -> m b) -> b -> [a] -> m b
+foldRightM _ a [] = return a
+foldRightM f a (x:xs) = foldRightM f a xs >>= (\b -> f x b)
+
+
+-- Exercises 9
+
+data Nat = Zero
+         | Succ Nat
+         deriving Show
+
+zero,one,two,three,four :: Nat
+zero = Zero
+one = Succ Zero
+two = Succ one
+three = Succ two
+four  = Succ three
+
+
+-- Ex (0)
+
+natToInteger1 :: Nat -> Integer
+
+natToInteger1 Zero  = 0
+natToInteger1 (Succ n) =  1 + natToInteger1 n
+
+
+
+-- Ex (1)
+
+integerToNat :: Integer -> Nat
+
+integerToNat 0 = Zero
+integerToNat n = Succ (integerToNat (n-1))
+
+
+
+-- Ex (2)
+
+add :: Nat -> Nat -> Nat
+
+add Zero n  = n
+add (Succ n) m = Succ (add m n)
+
+
+-- Ex (3)
+mult :: Nat -> Nat -> Nat
+mult m Zero = Zero
+mult m (Succ n) = add m (mult m n)
+
+
+-- Ex (9)
+
+data Maybe1 a = Nothing1 | Just1 a
+
+instance Monad Maybe1 where
+  return n = Just1 n
+  Nothing1 >>= _    = Nothing1
+  (Just1 n) >>= f   = f n
+
+instance Functor Maybe1 where
+  fmap  _ Nothing1  = Nothing1
+  fmap f (Just1 n) = Just1 (f n)

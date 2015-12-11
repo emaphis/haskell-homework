@@ -100,7 +100,7 @@ drop' 0 xs     = xs
 drop' _ []     = []
 drop' n (_:xs) = drop (n-1) xs
 
--- concatenate
+-- append
 (+++)         :: [a] -> [a] -> [a]
 []     +++ ys  = ys
 (x:xs) +++ ys  = x : (xs +++ ys)

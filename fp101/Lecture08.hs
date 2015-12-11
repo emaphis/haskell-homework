@@ -46,15 +46,28 @@ import System.IO
 
 -- 9.4  Sequencing - one action after another
 
--- (>>-)   :: IO a -> (a -> IO b) -> IO b
+-- (>>=)   :: IO a -> (a -> IO b) -> IO b
 -- f >>= g  = \ world -> case f world of
 --                            (v,world') -> g v world'
 
-a :: IO (Char,Char)
+
+--      T <- IO T
+-- do { x <- E}
+
+--     Char <- IO Char
+-- do { c   <- getChar }
+
+a, a' :: IO (Char,Char)
 a  = do x <- getChar
         getChar
         y <- getChar
         return (x,y)
+
+a' = getChar >>= (\ x ->
+      getChar >>= (\ _ ->
+        getChar >>= (\ y ->
+          return (x,y))))
+
 
 
 -- 9.5  Derived primitives
@@ -69,11 +82,13 @@ getLine'  = do x <- getChar
                       return (x:xs)
 
 -- write a string to the screen
-putStr'       :: String -> IO ()
+putStr'   :: String -> IO ()
 putStr' []     = return ()
 putStr' (x:xs) = do putChar x
                     putStr' xs
 
+--putStr'' str = foldr ^^ (return ()) str
+--  where  x ^^ p = putChar x >>= \ _ -> p
 
 -- Write a string an move to a new line
 putStrLn'     :: String -> IO ()

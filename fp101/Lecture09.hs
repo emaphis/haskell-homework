@@ -21,7 +21,9 @@ left (x,y) = (x-1,y)
 -- type can also have parameters
 type Pair a = (a,a)
 
-mult      :: Pair Int -> Int
+type Pint = Pair Int  -- world of type level
+
+mult      :: Pair Int -> Int -- world of value level
 mult (m,n) = m*n
 
 copy  :: a -> Pair a
@@ -38,9 +40,13 @@ left' (x,y) = (x-1,y)
 
 
 -- 10.2  Data declarations
+-- Algerbriac data types
 -- a new type specified by its values.
 data Bool' = False' | True'
--- True and False are constructors
+-- True and False are constructors of type Bool'
+-- must begin with upper-case letters
+-- similar to context free grammers.
+
 
 data Answer  = Yes | No | Unknown
 
@@ -51,6 +57,7 @@ flip'        :: Answer -> Answer
 flip' Yes     = No
 flip' No      = Yes
 flip' Unknown = Unknown
+
 
 -- can be used like built in types
 data Move = Left' | Right' | Up' | Down'
@@ -82,6 +89,10 @@ area     :: Shape -> Float
 area (Circle r) = pi * r*r
 area (Rect x y) = x * y
 
+-- Circle and Rect can be viewed a functions that construct values of Shape
+-- Circle :: Float -> Shape
+-- Rect   :: Float -> Float -> Shape
+
 -- data definitions can also take parameters
 data Maybe' a = Nothing' | Just' a
 
@@ -98,11 +109,16 @@ safehead xs   = Just (head xs)
 
 data Nat = Zero | Succ Nat
 
-zero,one,two,three :: Nat
+zero,one,two,three,inf :: Nat
 zero = Zero
 one = Succ Zero
 two = Succ one
 three = Succ two
+
+inf = Succ inf  -- whoah
+
+four  = Succ (Succ (Succ (Succ Zero)))
+four' = 1 + (1 + (1 + (1 + 0)))
 
 nat2int    :: Nat -> Int
 nat2int Zero  = 0

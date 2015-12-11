@@ -29,8 +29,8 @@ int2nat n  = Succ (int2nat (n-1))
 -- Ex (0)  - natToInteger
 
 natToInteger1,natToInteger2,natToInteger3,natToInteger4,
- natToInteger5,natToInteger6
-  :: Nat -> Int
+ natToInteger5,natToInteger6,natToInteger7
+  :: Nat -> Integer
 
 -- good
 natToInteger1 Zero = 0
@@ -57,12 +57,12 @@ natToInteger6 = head . m
         m (Succ n) = [sum [x | x <- (1 : m n)]]
 
 -- good - counts 'S' ha ha ha
-natToInteger7 :: Nat -> Integer
 natToInteger7 = \ n -> genericLength [c | c <- show n,c == 'S']
 
 -- bad -  doesn't compile, but good if the signature is changed
 natToInteger8 :: Nat -> Int
 natToInteger8 = \ n -> length [c | c <- show n, c == 'S']
+
 
 
 -- Ex 1  - integerToNat

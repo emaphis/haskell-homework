@@ -72,3 +72,7 @@ getCh = do hSetEcho stdin False
            c <- getChar
            hSetEcho stdin True
            return c
+
+dup a = (a, a)
+
+fun = dup . dup . dup
