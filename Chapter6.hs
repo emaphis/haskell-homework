@@ -1,4 +1,4 @@
--- | Programming with Lists
+-- | Chapter 6 - Programming with Lists
 
 module Chapter6 where
 
@@ -32,8 +32,8 @@ sing :: a -> [a]
 sing x = [x]
 
 
--- Ex 6.2 -- [[a]] -> [[a]] - isn't the most general type, it is
--- constrained ot by a list of list of some type a.  A type 'a'
+-- Ex 6.2 -- [[a]] -> [[a]] - isn't the most general type for 'id', it is
+-- constrained by a list of list of some type a.  A type 'a'
 -- hold more types including lists of lists
 
 
@@ -50,7 +50,7 @@ shift ((x,y),z) = (x,(y,z))
 -- 6.3 Finding your way around the Haskel libraries
 
 
--- The Pircture example: Implementation
+-- The Picture example: Implementation
 
 type Picture = [[Char]]
 
@@ -300,3 +300,154 @@ invertColourB pic =
 
 printPictureB :: PictureB -> IO ()
 printPictureB p = putStr (concat [])
+
+
+-- Ex 6.20  - picture a list of columns
+
+type PictureCol = [[Char]]
+
+
+
+-- Supermarket billing
+
+type Name    = String
+type Price   = Int
+type BarCode = Int
+
+type Database = [(BarCode,Name,Price)]
+
+codeIndex :: Database
+codeIndex = [ (4719, "Fish Fingers", 121),
+              (5643, "Nappies", 1010),
+              (3814, "Orange Jelly", 56),
+              (1111, "Hula Hoops", 21),
+              (1112, "Hula Hoops (Giant)", 133),
+              (1234, "Dry Sherry, 1lt", 540)]
+
+
+type TillType = [BarCode]
+
+type BillType = [(Name, Price)]
+
+produceBill :: TillType -> String
+produceBill = formatBill . makeBill
+
+lineLength :: Int
+lineLength = 30
+
+-- Ex. 6.39
+
+formatPence :: Price -> String
+formatPence pr =  pounds ++ "." ++ pence
+  where pounds = show (pr `div` 100)
+        pnc    = pr `mod` 100
+        pence = if pnc > 9
+                then show pnc
+                else "0" ++ show pnc
+-- Ex 6.40
+
+format :: String -> String -> String
+format str1 str2 = str1 ++ buff ++ str2
+  where buff = ['.' | _ <- [1..n]]
+        n = lineLength - length str1 - length str2
+
+formatLine  :: (Name,Price) -> String
+formatLine (nm,pr) = format nm pence ++ "\n"
+  where pence = formatPence pr
+
+-- Ex 6.41
+
+formatLines :: [(Name,Price)] -> String
+formatLines lst = concat [formatLine ln | ln <- lst]
+
+-- Ex 5.42
+
+makeTotal :: BillType -> Price
+makeTotal bt = sum [pr | (_,pr) <- bt]
+
+-- Ex 6.43
+
+formatTotal :: Price -> String
+formatTotal pr = "\n" ++ format "Total" pence
+  where pence = formatPence pr
+
+-- Ex 6.44
+
+formatHeader :: String -> String
+formatHeader name = replicate n ' ' ++ name ++ "\n"
+  where n = (lineLength - length name) `div` 2
+
+formatBill' :: BillType -> String
+formatBill' bt = formatHeader "Haskell Stores" ++ "\n" ++
+                 formatLines bt ++ "\n" ++
+                 formatTotal (makeTotal bt)
+
+bill1 :: BillType
+bill1 = [("Dry Sherry, 1lt",540),("Fish Fingers",121),
+         ("Orange Jelly", 56), ("Hula Hoops (Giant)",133),
+         ("Unknown Item",0),("Dry Sherry, 1lt", 540)]
+
+-- Ex 6.45
+
+look' :: Database -> BarCode -> [(Name,Price)]
+look' db bc =  [(nm,pr) | (bc',nm,pr) <- db, bc == bc']
+
+look :: Database -> BarCode -> (Name,Price)
+look db bc = if not (null rtn)
+             then head rtn
+             else ("Unknown Item",0)
+  where rtn = look' db bc
+
+-- Ex 6.46
+lookup' :: BarCode -> (Name,Price)
+lookup' = look codeIndex
+
+
+-- Ex 6.47
+makeBill   :: TillType -> BillType
+makeBill till = [lookup' bc | bc <- till]
+
+
+til :: TillType
+til = [1234,4719,3814,1113,1234]
+
+
+-- Extending the problem
+
+-- Ex 6.48
+
+makeDiscount :: BillType -> Price
+makeDiscount bt = (countSherry bt `div` 2) * 100
+
+countSherry :: BillType -> Int
+countSherry []  = 0
+countSherry (x:xs)
+  | fst x == "Dry Sherry, 1lt" = 1 + countSherry xs
+  | otherwise                  = countSherry xs
+
+formatDiscount :: Price -> String
+formatDiscount pr = format "Discount" (formatPence pr) ++ "\n"
+
+formatBill :: BillType -> String
+formatBill bt = formatHeader "Haskell Stores" ++ "\n" ++
+                formatLines bt ++ "\n" ++
+                formatDiscount discount ++ 
+                formatTotal total
+  where discount = makeDiscount bt
+        total    = makeTotal bt  - discount
+
+-- 6.49  database functions
+
+type Record = (BarCode,Name,Price)
+
+update :: Database -> Record -> Database
+update db (bc,nm,pr) = add db2 (bc,nm,pr)
+  where db2 = remove db bc
+
+remove :: Database -> BarCode -> Database
+remove db bc
+  = [(bc',name,price) | (bc',name,price) <- db, bc' /= bc]
+
+add :: Database -> Record -> Database
+add db rc = rc : db
+            

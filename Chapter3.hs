@@ -129,7 +129,7 @@ fourEqual1 m n o p = threeEqual m n o && p == o
 prop_4e :: Integer -> Integer -> Integer -> Integer -> Bool
 prop_4e m n o p = fourEqual m n o p  == fourEqual1 m n o p
 
--- Ex 3.12  QuickCheck definitions - see abouve
+-- Ex 3.12  QuickCheck definitions - see above
 
 
 -- 3.4 Guards
